@@ -1,6 +1,5 @@
 require("dotenv").config();
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first");
+
 const express = require("express");
 const session = require("express-session");
 const { Pool } = require("pg");
@@ -351,24 +350,14 @@ app.post("/forgot-registration", async (req, res) => {
     );
 
     const transporter = nodemailer.createTransport({
-
-  host: "smtp.gmail.com",
-
-  port: 587,
-
-  secure: false,
-
-  requireTLS: true,
-
+  service: "gmail",
   auth: {
-
     user: process.env.EMAIL_USER,
-
     pass: process.env.EMAIL_PASS
-
   }
-
 });
+
+  
 
     await transporter.verify();
 

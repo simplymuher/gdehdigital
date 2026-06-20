@@ -357,12 +357,6 @@ app.post("/forgot-registration", async (req, res) => {
   }
 });
 
-  
-
-    await transporter.verify();
-
-    console.log("SMTP VERIFIED");
-
     await transporter.sendMail({
 
       from:

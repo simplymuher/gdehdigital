@@ -284,7 +284,8 @@ app.post("/forgot-registration", async (req, res) => {
 
 
 const link = `${process.env.BASE_URL}/recover-registration?token=${token}`;
-
+console.log(process.env.BASE_URL);
+console.log(link);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {

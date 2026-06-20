@@ -249,6 +249,8 @@ res.redirect(
 
 app.post("/forgot-registration", async (req, res) => {
 
+  console.log("FORGOT REGISTRATION ROUTE HIT");
+
   try {
 
     const email =

@@ -243,13 +243,7 @@ res.redirect(
 
 });
 
-});
-
-
-
 app.post("/forgot-registration", async (req, res) => {
-
-  console.log("FORGOT REGISTRATION ROUTE HIT");
 
   try {
 
@@ -265,7 +259,11 @@ app.post("/forgot-registration", async (req, res) => {
 
     }
 
-    const result = await pool.query(
+    console.log("================================");
+    console.log("FORGOT REGISTRATION REQUEST");
+    console.log("Email:", email);
+
+    const studentResult = await pool.query(
       `
       SELECT
         id,
@@ -280,20 +278,22 @@ app.post("/forgot-registration", async (req, res) => {
       [email]
     );
 
-    if (result.rows.length === 0) {
+    if (studentResult.rows.length === 0) {
+
+      console.log("Student not found");
 
       return res.status(404).json({
         success: false,
-        message: "Email address not found"
+        message: "Email address not found."
       });
 
     }
 
-    const student = result.rows[0];
+    const student =
+      studentResult.rows[0];
 
     const token =
-      crypto
-      .randomBytes(32)
+      crypto.randomBytes(32)
       .toString("hex");
 
     await pool.query(
@@ -323,25 +323,29 @@ app.post("/forgot-registration", async (req, res) => {
         [student.id]
       );
 
-    const baseUrl =
-  process.env.BASE_URL;
+    const link =
+`${process.env.BASE_URL}/recover-registration?token=${token}`;
 
-const link =
-  `${baseUrl}/recover-registration?token=${token}`;
-    console.log("================================");
-    console.log("FORGOT REGISTRATION");
     console.log("Student:", student.student_name);
     console.log("Reg Number:", student.reg_number);
-    console.log("Email:", student.email);
     console.log("Student ID:", student.id);
-    console.log("Token:", token);
-    console.log(
-      "Saved Token:",
+    console.log("Saved Token:",
       verifyToken.rows[0]?.recovery_token
     );
-    console.log("BASE_URL:", process.env.BASE_URL);
-console.log("Recovery Link:", link);
-    console.log("================================");
+
+    console.log("BASE_URL:",
+      process.env.BASE_URL
+    );
+
+    console.log("Recovery Link:", link);
+
+    console.log("EMAIL_USER:",
+      process.env.EMAIL_USER
+    );
+
+    console.log("EMAIL_PASS EXISTS:",
+      !!process.env.EMAIL_PASS
+    );
 
     const transporter =
       nodemailer.createTransport({
@@ -359,6 +363,10 @@ console.log("Recovery Link:", link);
         }
 
       });
+
+    await transporter.verify();
+
+    console.log("SMTP VERIFIED");
 
     await transporter.sendMail({
 
@@ -410,12 +418,8 @@ console.log("Recovery Link:", link);
         </a>
 
         <p>
-          This link expires in 30 minutes.
-        </p>
-
-        <p>
-          If you did not request this,
-          please ignore this email.
+          This link expires in
+          30 minutes.
         </p>
 
       </div>
@@ -427,6 +431,8 @@ console.log("Recovery Link:", link);
       "Recovery email sent successfully to:",
       student.email
     );
+
+    console.log("================================");
 
     return res.json({
 
@@ -440,22 +446,31 @@ console.log("Recovery Link:", link);
   } catch (err) {
 
     console.error(
-      "FORGOT REGISTRATION ERROR:",
-      err
+      "FORGOT REGISTRATION ERROR:"
     );
+
+    console.error(err);
 
     return res.status(500).json({
 
       success: false,
 
       message:
-        "Server error"
+        err.message
 
     });
 
   }
 
 });
+
+
+
+
+
+        
+  
+
 
 // ------------------------------
 // RECOVERY PAGE (VERIFY TOKEN)

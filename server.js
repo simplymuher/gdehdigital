@@ -235,11 +235,13 @@ res.status(500).json({
 });
 app.get("/logout", (req, res) => {
 
-req.session.destroy(() => {
+  req.session.destroy(() => {
 
-res.redirect(
-  "/index.html"
-);
+    res.redirect(
+      "/index.html"
+    );
+
+  });
 
 });
 

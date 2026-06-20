@@ -281,8 +281,9 @@ app.post("/forgot-registration", async (req, res) => {
       `,
       [token, student.id]
     );
+const token = crypto.randomBytes(32).toString("hex");
 
-    const link = `https://gdehdigital-7b5q.onrender.com/recover-registration?token=${token}`;
+const link = `${process.env.BASE_URL}/recover-registration?token=${token}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

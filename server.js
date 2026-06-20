@@ -248,12 +248,29 @@ res.redirect(
 
 
 app.post("/forgot-registration", async (req, res) => {
-  try {
-    const email = req.body.email.trim().toLowerCase();
 
-    const studentResult = await pool.query(
+  try {
+
+    const email =
+      req.body.email?.trim().toLowerCase();
+
+    if (!email) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+
+    }
+
+    const result = await pool.query(
       `
-      SELECT id, email, student_name, reg_number
+      SELECT
+        id,
+        email,
+        student_name,
+        reg_number,
+        course_name
       FROM students
       WHERE LOWER(TRIM(email)) = $1
       LIMIT 1
@@ -261,72 +278,182 @@ app.post("/forgot-registration", async (req, res) => {
       [email]
     );
 
-    if (studentResult.rows.length === 0) {
+    if (result.rows.length === 0) {
+
       return res.status(404).json({
         success: false,
-        message: "Email address not found."
+        message: "Email address not found"
       });
+
     }
 
-    const student = studentResult.rows[0];
+    const student = result.rows[0];
 
-    const token = crypto.randomBytes(32).toString("hex");
+    const token =
+      crypto
+      .randomBytes(32)
+      .toString("hex");
 
     await pool.query(
       `
       UPDATE students
-      SET recovery_token = $1,
-          recovery_token_expiry = NOW() + INTERVAL '30 minutes'
+      SET
+        recovery_token = $1,
+        recovery_token_expiry =
+        NOW() + INTERVAL '30 minutes'
       WHERE id = $2
       `,
-      [token, student.id]
+      [
+        token,
+        student.id
+      ]
     );
 
+    const verifyToken =
+      await pool.query(
+        `
+        SELECT
+          recovery_token,
+          recovery_token_expiry
+        FROM students
+        WHERE id = $1
+        `,
+        [student.id]
+      );
 
-const link = `${process.env.BASE_URL}/recover-registration?token=${token}`;
-console.log(process.env.BASE_URL);
-console.log(link);
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-   
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS EXISTS:", !!process.env.EMAIL_PASS);
-    try {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: student.email,
-    subject: "GDEH Registration Recovery",
-    html: `
-      <div style="font-family:Arial,sans-serif">
-        <h2>Garissa Digital Empowerment Hub CBO</h2>
-        <p>Click below to recover your registration number:</p>
+    const baseUrl =
+  process.env.BASE_URL;
 
-        <a href="${link}"
-          style="background:#0B1F4D;color:#fff;padding:12px 20px;
-          text-decoration:none;border-radius:5px;display:inline-block;">
+const link =
+  `${baseUrl}/recover-registration?token=${token}`;
+    console.log("================================");
+    console.log("FORGOT REGISTRATION");
+    console.log("Student:", student.student_name);
+    console.log("Reg Number:", student.reg_number);
+    console.log("Email:", student.email);
+    console.log("Student ID:", student.id);
+    console.log("Token:", token);
+    console.log(
+      "Saved Token:",
+      verifyToken.rows[0]?.recovery_token
+    );
+    console.log("BASE_URL:", process.env.BASE_URL);
+console.log("Recovery Link:", link);
+    console.log("================================");
+
+    const transporter =
+      nodemailer.createTransport({
+
+        service: "gmail",
+
+        auth: {
+
+          user:
+            process.env.EMAIL_USER,
+
+          pass:
+            process.env.EMAIL_PASS
+
+        }
+
+      });
+
+    await transporter.sendMail({
+
+      from:
+        process.env.EMAIL_USER,
+
+      to:
+        student.email,
+
+      subject:
+        "GDEH Registration Number Recovery",
+
+      html: `
+      <div style="
+        font-family:Arial,sans-serif;
+        max-width:600px;
+        margin:auto;
+      ">
+
+        <h2 style="color:#0B1F4D;">
+          Garissa Digital Empowerment Hub CBO
+        </h2>
+
+        <p>
+          Dear ${student.student_name},
+        </p>
+
+        <p>
+          You requested to recover your
+          registration number.
+        </p>
+
+        <p>
+          Click the button below:
+        </p>
+
+        <a
+          href="${link}"
+          style="
+            background:#0B1F4D;
+            color:#ffffff;
+            padding:12px 20px;
+            text-decoration:none;
+            border-radius:5px;
+            display:inline-block;
+          "
+        >
           Recover Registration Number
         </a>
 
-        <p>This link expires in 30 minutes.</p>
+        <p>
+          This link expires in 30 minutes.
+        </p>
+
+        <p>
+          If you did not request this,
+          please ignore this email.
+        </p>
+
       </div>
-    `
-  });
+      `
 
-  console.log("EMAIL SENT SUCCESSFULLY");
+    });
 
-} catch (emailError) {
-  console.error("EMAIL ERROR:", emailError);
+    console.log(
+      "Recovery email sent successfully to:",
+      student.email
+    );
 
-  return res.status(500).json({
-    success: false,
-    message: "Email failed"
-  });
-}
+    return res.json({
+
+      success: true,
+
+      message:
+        "Recovery email sent successfully"
+
+    });
+
+  } catch (err) {
+
+    console.error(
+      "FORGOT REGISTRATION ERROR:",
+      err
+    );
+
+    return res.status(500).json({
+
+      success: false,
+
+      message:
+        "Server error"
+
+    });
+
+  }
+
+});
 
 // ------------------------------
 // RECOVERY PAGE (VERIFY TOKEN)

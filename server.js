@@ -281,7 +281,7 @@ app.post("/forgot-registration", async (req, res) => {
       `,
       [token, student.id]
     );
-const token = crypto.randomBytes(32).toString("hex");
+
 
 const link = `${process.env.BASE_URL}/recover-registration?token=${token}`;
 

@@ -293,39 +293,40 @@ console.log(link);
         pass: process.env.EMAIL_PASS
       }
     });
+   
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS EXISTS:", !!process.env.EMAIL_PASS);
+    try {
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: student.email,
+    subject: "GDEH Registration Recovery",
+    html: `
+      <div style="font-family:Arial,sans-serif">
+        <h2>Garissa Digital Empowerment Hub CBO</h2>
+        <p>Click below to recover your registration number:</p>
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: student.email,
-      subject: "GDEH Registration Number Recovery",
-      html: `
-        <div style="font-family:Arial,sans-serif">
-          <h2>Garissa Digital Empowerment Hub CBO</h2>
-          <p>You requested to recover your registration number.</p>
-          <a href="${link}"
-             style="background:#0B1F4D;color:#fff;padding:12px 20px;
-             text-decoration:none;border-radius:5px;display:inline-block;">
-            Recover Registration Number
-          </a>
-          <p>This link expires in 30 minutes.</p>
-        </div>
-      `
-    });
+        <a href="${link}"
+          style="background:#0B1F4D;color:#fff;padding:12px 20px;
+          text-decoration:none;border-radius:5px;display:inline-block;">
+          Recover Registration Number
+        </a>
 
-    return res.json({
-      success: true,
-      message: "Recovery email sent successfully"
-    });
+        <p>This link expires in 30 minutes.</p>
+      </div>
+    `
+  });
 
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
-});
+  console.log("EMAIL SENT SUCCESSFULLY");
 
+} catch (emailError) {
+  console.error("EMAIL ERROR:", emailError);
+
+  return res.status(500).json({
+    success: false,
+    message: "Email failed"
+  });
+}
 
 // ------------------------------
 // RECOVERY PAGE (VERIFY TOKEN)

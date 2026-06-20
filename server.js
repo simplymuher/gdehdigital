@@ -282,7 +282,7 @@ app.post("/forgot-registration", async (req, res) => {
       [token, student.id]
     );
 
-    const link = `http://localhost:3002/recover-registration?token=${token}`;
+    const link = `https://gdehdigital-7b5q.onrender.com/recover-registration?token=${token}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

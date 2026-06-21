@@ -1,149 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDEH Student Portal - Login</title>
+  
+  <!-- Premium elegant sans-serif typography (Fixed font proxy domains) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* ==========================================================================
+       1. GLOBAL STYLES & RESET (Elegant & Compact)
+       ========================================================================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        letter-spacing: -0.1px;
+    }
 
-<title>GDEH Student Portal</title>
+    body {
+        background-color: #f6f8fa;
+        color: #111111; /* Black body text font */
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 24px 16px;
+    }
 
-<style>
+    /* Wrapper to center login components layout workspace */
+    .main-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 360px; /* Slimmed down layout frame width for elegance */
+        margin: 0 auto;
+    }
 
-body{
-background:#ffffff;
-color:#0B1F4D;
-font-family:Arial,sans-serif;
-margin:0;
-padding:20px;
-}
+    /* Brand Header identity container style */
+    .brand-logo-container {
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-.logo{
-text-align:center;
-margin-top:30px;
-}
+    .brand-logo-container img {
+        height: 36px;
+        width: auto;
+        display: block;
+        margin: 0 auto;
+    }
 
-.logo img{
-width:120px;
-}
+    /* ==========================================================================
+       2. ELEGANT LOGIN CARD FRAME
+       ========================================================================== */
+    .login-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 28px 24px;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(10, 25, 47, 0.04);
+        margin-bottom: 24px;
+    }
 
-h1{
-text-align:center;
-}
+    .login-card h2 {
+        color: #0A192F; /* Dark Navy Title Font */
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-.login-box{
-max-width:450px;
-margin:30px auto;
-padding:25px;
-border-radius:15px;
-background:#fff;
-border:2px solid #0B1F4D;
-box-shadow:0 0 25px rgba(11,31,77,.25);
-}
+    /* Form Layout Elements */
+    .form-group {
+        margin-bottom: 16px;
+        position: relative;
+    }
 
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-margin-bottom:15px;
-border:1px solid #0B1F4D;
-border-radius:8px;
-box-sizing:border-box;
-}
+    .form-group label {
+        display: block;
+        color: #0A192F; /* Dark Navy label text */
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+    }
 
-button{
-width:100%;
-padding:12px;
-background:#0B1F4D;
-color:#fff;
-border:none;
-border-radius:30px;
-font-weight:bold;
-cursor:pointer;
-}
+    .form-group input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        color: #111111; /* Black Font Input text */
+        background: #fdfdfd;
+        border: 1px solid rgba(10, 25, 47, 0.1);
+        border-radius: 6px;
+        outline: none;
+        transition: border-color 0.2s ease;
+    }
 
-a{
-color:#0B1F4D;
-text-decoration:none;
-font-weight:bold;
-}
+    .form-group input:focus {
+        border-color: #FF6B00; /* Orange border indicator */
+    }
 
-.footer{
-text-align:center;
-margin-top:40px;
-}
+    /* Access switches configuration frame */
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
 
-</style>
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        color: #111111; /* Black text */
+        cursor: pointer;
+    }
 
+    .remember-me input {
+        accent-color: #FF6B00; /* Orange Checkbox fill */
+    }
+
+    .forgot-link {
+        font-size: 0.75rem;
+        color: #FF6B00; /* Orange Link Font */
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Submission Execution Trigger Node */
+    .login-submit-btn {
+        width: 100%;
+        background: #0A192F; /* Dark Navy Container base */
+        color: #ffffff;
+        border: none;
+        padding: 11px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.82rem;
+        letter-spacing: 0.4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .login-submit-btn:hover {
+        background-color: #FF6B00; /* Orange Hover Accent */
+    }
+
+    /* ==========================================================================
+       3. MINIMAL TEXT LINKS DIRECTLY ON THE BACKGROUND (No Cards)
+       ========================================================================== */
+    .ancillary-nav-grid {
+        width: 100%;
+        display: flex;
+        flex-direction: column; /* Smooth vertical stack list alignment */
+        align-items: center;
+        gap: 12px;
+        padding: 4px 0;
+    }
+
+    .ancillary-link {
+        font-size: 0.75rem; /* Very small elegant font letters */
+        font-weight: 500;
+        color: #FF6B00; /* Orange font text requested */
+        text-decoration: none;
+        text-align: center;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        letter-spacing: 0.2px;
+    }
+
+    .ancillary-link:hover {
+        opacity: 0.8;
+        transform: translateY(-0.5px);
+        text-decoration: underline;
+    }
+
+    /* Subtle treatment for main home anchor shortcut link */
+    .ancillary-link.portal-anchor {
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        border-bottom: 1px dashed rgba(255, 107, 0, 0.4);
+        padding-bottom: 2px;
+        margin-bottom: 4px;
+    }
+
+    /* ==========================================================================
+       4. FOOTER STYLES
+       ========================================================================== */
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(10, 25, 47, 0.05);
+        width: 100%;
+    }
+
+    .footer p {
+        color: #111111; /* Black footer text */
+        font-size: 0.72rem;
+        margin-bottom: 4px;
+    }
+
+    .footer p:first-child {
+        color: #0A192F; /* Dark Navy brand emphasis label */
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="logo">
-<img src="/gdeh_logo.png">
-</div>
+  <!-- Layout Main Content Parent Window Workspace Wrapper -->
+  <div class="main-container">
 
-<h1>GDEH Student Portal</h1>
+    
+    <div class="brand-logo-container">
+      <img src="/gdeh_logo.png" alt="GDEH Logo">
+    </div>
 
-<div class="login-box">
+    <!-- Central User Authentication Node -->
+    <div class="login-card">
+      <h2>GDEH Student Portal</h2>
+      
+      <!-- Modified form using updated field ids from specified raw input parameters -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="studentName">Full Name</label>
+          <input type="text" id="studentName" placeholder="Full Name" required autocomplete="name">
+        </div>
 
-<form id="loginForm">
+        <div class="form-group">
+          <label for="regNumber">Registration Number</label>
+          <input type="text" id="regNumber" placeholder="Registration Number" required>
+        </div>
 
-<input
-type="text"
-id="studentName"
-placeholder="Full Name"
-required
->
+        <div class="form-options">
+          <label class="remember-me" for="rememberMe">
+            <input type="checkbox" id="rememberMe"> Remember Me
+          </label>
+          <a href="/forgot_regNumber.html" class="forgot-link">Forgot Registration Number?</a>
+        </div>
 
-<input
-type="text"
-id="regNumber"
-placeholder="Registration Number"
-required
->
+        <button type="submit" class="login-submit-btn">Login</button>
+      </form>
+    </div>
 
-<label>
+    <!-- Uniform Minimal Text Links Hierarchy Layout Structure -->
+    <div class="ancillary-nav-grid">
+      <a href="/student-portal" class="ancillary-link portal-anchor">Student Portal Home</a>
+      <a href="/about" class="ancillary-link">About Us</a>
+      <a href="/services" class="ancillary-link">Services</a>
+      <a href="/helpdesk" class="ancillary-link">Help Desk Ticket</a>
+      <a href="/track-certificate" class="ancillary-link">Track Certificate</a>
+      <a href="/verify-certificate" class="ancillary-link">Verify Certificate</a>
+      <a href="/contact" class="ancillary-link">Contact Us</a>
+    </div>
 
-<input
-type="checkbox"
-id="rememberMe"
->
+  </div> <!-- End Layout Main Content Workspace Container -->
 
-Remember Me
+  <!-- Brand Signature Footer Component matching system metrics safely -->
+  <footer class="footer">  
+    <p>© GDEH CBO Student Portal. All Rights Reserved.</p>  
+    <p>Secure Management Systems</p>
+  </footer>
 
-</label>
-
-<br><br>
-
-<button type="submit">
-Login
-</button>
-
-</form>
-
-<br>
-
-<div style="text-align:center;">
-<a href="/forgot_regNumber.html">
-Forgot Registration Number?
-</a>
-</div>
-
-</div>
-
-<div class="footer">
-
-<p>
-© GDEH CBO Student Portal. All Rights Reserved.
-</p>
-
-<p>
-Secure Management Systems
-</p>
-
-</div>
-
-<script src="index.js"></script>
+  <!-- External processing engine payload hook -->
+  <script src="index.js"></script>
 
 </body>
 </html>

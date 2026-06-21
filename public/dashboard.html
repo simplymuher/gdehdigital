@@ -1,171 +1,405 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GDEH Student Dashboard</title><style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDEH Student Dashboard</title>
 
-body{
-  font-family:Arial,sans-serif;
-  margin:0;
-  padding:15px;
-  background:#ffffff;
-  color:#0B1F4D;
-  font-size:13px;
-}
+  <!-- Premium elegant sans-serif typography -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-.header{
-  position:relative;
-  text-align:center;
-  margin-bottom:10px;
-}
+  <style>
+    /* ==========================================================================
+       1. GLOBAL STYLES & RESET (Elegant & Compact)
+       ========================================================================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        letter-spacing: -0.1px;
+    }
 
-.logo img{
-  width:85px;
-}
+    body {
+        background-color: #f6f8fa;
+        color: #111111; /* Black body text font */
+        padding: 16px;
+        line-height: 1.5;
+    }
 
-.logout-btn{
-  position:absolute;
-  top:5px;
-  right:5px;
-  text-decoration:none;
-  font-size:20px;
-  color:#0B1F4D;
-}
+    /* ==========================================================================
+       2. REPOSITIONED TOP MASTER HEADER ARCHITECTURE
+       ========================================================================== */
+    .master-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+        margin-bottom: 16px;
+        padding: 4px;
+    }
 
-h1{
-  text-align:center;
-  font-size:18px;
-  margin:10px 0 15px;
-  font-weight:600;
-}
+    .brand-meta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
 
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:6px;
-  padding:10px;
-  margin-bottom:10px;
-  box-shadow:0 1px 2px rgba(0,0,0,0.04);
-}
+    .brand-meta-group img {
+        height: 28px;
+        width: auto;
+        display: block;
+        align-self: flex-start;
+    }
 
-.card h3{
-  margin:0 0 8px;
-  padding-bottom:5px;
-  border-bottom:1px solid #f1f1f1;
-  font-size:14px;
-  color:#0B1F4D;
-}
+    /* Minimal Small Dashboard Title immediately below the logo */
+    h1 {
+        color: #0A192F; /* Dark Navy Title Font */
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        opacity: 0.85;
+    }
 
-.card p{
-  margin:4px 0;
-  font-size:12px;
-}
+    .action-utilities-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-top: 2px;
+    }
 
-.unit-card{
-  border:1px solid #ececec;
-  border-radius:5px;
-  padding:7px 9px;
-  margin-bottom:5px;
-  font-size:12px;
-  background:#fafafa;
-}
+    .notification-bell {
+        font-size: 1.05rem;
+        color: #0A192F;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        user-select: none;
+    }
 
-.failed-unit{
-  border-left:5px solid #dc2626;
-  background:#fef2f2;
-  color:#991b1b;
-  font-weight:bold;
-}
+    .notification-bell:hover {
+        color: #FF6B00; /* Orange text accent */
+    }
 
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:8px;
-}
+    /* Logout Icon pinned standalone top right */
+    .logout-btn {
+        font-size: 1.15rem;
+        color: #111111; /* Black Font */
+        text-decoration: none;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
 
-.menu-card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:6px;
-  padding:10px;
-  text-align:center;
-  box-shadow:0 1px 2px rgba(0,0,0,0.04);
-}
+    .logout-btn:hover {
+        color: #FF6B00; /* Orange Accent font */
+    }
 
-.menu-card span{
-  display:block;
-  margin-top:4px;
-  font-size:12px;
-  font-weight:bold;
-}
+    /* ==========================================================================
+       3. ELEGANT ORANGE SLIDING ANNOUNCEMENT BAR
+       ========================================================================== */
+    .announcement-bar-container {
+        background: rgba(255, 107, 0, 0.06); /* Soft elegant variant of orange */
+        border: 1px solid rgba(255, 107, 0, 0.2);
+        border-radius: 8px; /* Compact rounded corners */
+        padding: 8px 16px;
+        margin-bottom: 20px;
+        overflow: hidden; /* Clips the sliding text workspace bounds */
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-.menu-card small{
-  display:block;
-  margin-top:2px;
-  font-size:11px;
-  color:#666;
-}
+    .announcement-ticker-track {
+        display: inline-block;
+        white-space: nowrap;
+        padding-left: 100%;
+        animation: slideTicker 18s linear infinite;
+    }
 
-.pdf-download{
-  text-align:center;
-  cursor:pointer;
-  padding:15px;
-}
+    .announcement-text {
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: #FF6B00; /* Crisp orange font rules safely implemented */
+        letter-spacing: 0.2px;
+    }
 
-.pdf-download img{
-  width:90px;
-  height:auto;
-}
+    /* Seamless right-to-left smooth ticker sliding physics loop */
+    @keyframes slideTicker {
+        0% { transform: translate3d(0, 0, 0); }
+        100% { transform: translate3d(-100%, 0, 0); }
+    }
 
-.pdf-download p{
-  margin:8px 0 3px;
-  font-weight:bold;
-  color:#0B1F4D;
-}
+    /* Pause ticker when mouse pointer floats on top for elite accessibility */
+    .announcement-bar-container:hover .announcement-ticker-track {
+        animation-play-state: paused;
+        cursor: pointer;
+    }
 
-.pdf-download small{
-  color:#666;
-}
+    /* ==========================================================================
+       4. BENTO BOX GRID LAYOUT (Tighter Spacing)
+       ========================================================================== */
+    .main-content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
 
-.pdf-download:hover{
-  opacity:0.85;
-}
+    /* Small Premium Cards */
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(10, 25, 47, 0.04);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
 
-.footer{
-  margin-top:20px;
-  text-align:center;
-  font-size:11px;
-  color:#0B1F4D;
-}
+    .card h3 {
+        color: #0A192F; /* Dark Navy Title Font */
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 107, 0, 0.1);
+        padding-bottom: 6px;
+    }
 
-</style></head><body><header class="header">  <div class="logo">
-    <img src="/gdeh_logo.png" alt="GDEH Logo">
-  </div><a href="/logout" class="logout-btn">⎋</a>
+    .card p {
+        color: #111111; /* Black body text font */
+        font-size: 0.82rem;
+        font-weight: 400;
+        margin-bottom: 8px;
+    }
 
-</header><h1>GDEH STUDENT DASHBOARD</h1><div class="card">  <h3>Student Details</h3>  <p>
-    <strong>Name:</strong>
-    <span id="name"></span>
-  </p>  <p>
-    <strong>Registration:</strong>
-    <span id="reg"></span>
-  </p>  <p>
-    <strong>Course:</strong>
-    <span id="course"></span>
-  </p></div><div class="card">  <h3>Registered Units</h3>  <div id="unitsList"></div></div><div class="card">  <h3>Failed Units Registration</h3>  <div id="failedUnitsList"></div></div><div class="card">  <h3>Official Result Slip</h3>  <p>
-    Download your official result slip in PDF format.
-  </p>
-<div class="pdf-download" onclick="downloadResultPDF()">
-  <img src="/pdf-icon.png" alt="PDF Result Slip">
+    .card strong {
+        color: #0A192F; /* Dark Navy labels */
+        font-weight: 500;
+        margin-right: 4px;
+    }
 
-  <p>Official Result Slip</p>
+    /* ==========================================================================
+       5. COMPONENT SYSTEM STYLES
+       ========================================================================== */
+    #unitsList, #failedUnitsList {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        color: #111111;
+        font-size: 0.82rem;
+    }
 
-  <small>Click to Download</small>
-</div>
+    /* Slim Elegant Button */
+    .exam-card-btn {
+        width: 100%;
+        background: #0A192F; /* Dark Navy Container */
+        color: #ffffff;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin-top: 14px;
+    }
 
-  <div class="dashboard-grid">  <div class="menu-card">
-    <span>Fees Status</span>
-    <small>Coming Soon</small>
-  </div>  <div class="menu-card">
-    <span>Attendance</span>
-    <small>Coming Soon</small>
-  </div></div><footer class="footer">  <p>
-    © GARISSA DIGITAL EMPOWERMENT HUB CBO
-  </p>  <p>
-    Student Portal | All Rights Reserved
-  </p></footer><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script><script src="dashboard.js"></script></body></html>
+    .exam-card-btn:hover {
+        background-color: #FF6B00; /* Orange Hover Accent */
+    }
+
+    /* High-end Dashed PDF Container */
+    .pdf-download {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border: 1px dashed #FF6B00; /* Orange Border Accent */
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin-top: 6px;
+    }
+
+    .pdf-download:hover {
+        background-color: rgba(255, 107, 0, 0.02);
+    }
+
+    .pdf-download img {
+        width: 28px;
+        height: auto;
+        margin-bottom: 8px;
+        opacity: 0.9;
+    }
+
+    .pdf-download p {
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: #111111; /* Black Text */
+        margin-bottom: 2px;
+    }
+
+    .pdf-download small {
+        color: #FF6B00; /* Orange Action Font */
+        font-weight: 500;
+        font-size: 0.72rem;
+        letter-spacing: 0.1px;
+    }
+
+    /* Sub-grid Block for Side Cards */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .menu-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(10, 25, 47, 0.04);
+    }
+
+    .menu-card span {
+        color: #0A192F; /* Dark Navy Title Font */
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .menu-card small {
+        color: #FF6B00; /* Orange status text font */
+        font-weight: 500;
+        background: rgba(255, 107, 0, 0.06);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 10px;
+        display: inline-block;
+    }
+
+    /* ==========================================================================
+       6. FOOTER STYLES
+       ========================================================================== */
+    .footer {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(10, 25, 47, 0.05);
+    }
+
+    .footer p {
+        color: #111111; /* Black text */
+        font-size: 0.75rem;
+        margin-bottom: 4px;
+    }
+
+    .footer p:first-child {
+        color: #0A192F; /* Dark Navy primary accent */
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Re-architected Top Master Alignment Group Layout Container -->
+  <div class="master-header">
+    <div class="brand-meta-group">
+      <img src="/gdeh_logo.png" alt="GDEH Logo">
+      <h1>Student Dashboard</h1>
+    </div>
+    
+    <div class="action-utilities-group">
+      <span class="notification-bell" title="Notifications">🔔</span>
+      <a href="/logout" class="logout-btn" title="Logout">⎋</a>
+    </div>
+  </div>
+
+  <!-- Elegant Orange Sliding Announcement Bar Framework (Between Header and Main Cards) -->
+  <div class="announcement-bar-container">
+    <div class="announcement-ticker-track">
+      <span class="announcement-text">⚠️ Announcement: Mid-Semester Exam Cards generation portal is now officially open. Please clear your outstanding balances to avoid access restrictions.</span>
+    </div>
+  </div>
+
+  <!-- Bento Box Workspace Layout Parent Grid -->
+  <div class="main-content-grid">
+
+    <div class="card">  
+      <h3>Student Details</h3>  
+      <p><strong>Name:</strong> <span id="name">John Doe</span></p>  
+      <p><strong>Registration:</strong> <span id="reg">GDEH/2026/0891</span></p>  
+      <p><strong>Course:</strong> <span id="course">Software Engineering</span></p>
+    </div>
+
+    <div class="card">  
+      <h3>Registered Units</h3>  
+      <div id="unitsList">
+        <p>No units loaded yet.</p>
+      </div>
+      <button class="exam-card-btn" onclick="generateExamCard()">Generate Exam Card</button>
+    </div>
+
+    <div class="card">  
+      <h3>Failed Units Registration</h3>  
+      <div id="failedUnitsList">
+        <p>None</p>
+      </div>
+    </div>
+
+    <div class="card">  
+      <h3>Official Result Slip</h3>  
+      <p>Download your official result slip in PDF format.</p>
+      <div class="pdf-download" onclick="downloadResultPDF()">
+        <img src="/pdf-icon.png" alt="PDF Result Slip">
+        <p>Official Result Slip</p>
+        <small>Click to Download</small>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">  
+      <div class="menu-card">
+        <span>Fees Status</span>
+        <small>Coming Soon</small>
+      </div>  
+      <div class="menu-card">
+        <span>Attendance</span>
+        <small>Coming Soon</small>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">  
+    <p>� GARISSA DIGITAL EMPOWERMENT HUB CBO</p>  
+    <p>Student Portal | All Rights Reserved</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>
+
+

@@ -1,7 +1,7 @@
 let studentData = {};
 let unitsData = [];
 let resultsData = [];
-
+let failedUnitsData = [];
 fetch("/dashboard")
 .then(res => res.json())
 .then(data => {
@@ -10,6 +10,7 @@ fetch("/dashboard")
   studentData = data.student;
   unitsData = data.units;
   resultsData = data.results;
+failedUnitsData = data.failedUnits || [];
 
   // =====================
   // STUDENT DETAILS
@@ -42,25 +43,44 @@ uniqueUnits.forEach(unit => {
     </div>
   `;
 });
-  // =====================
-  // RESULTS TABLE
-  // =====================
-  const resultsBody = document.getElementById("resultsBody");
-  resultsBody.innerHTML = "";
+// =====================
+// FAILED UNITS
+// =====================
 
-  data.results.forEach(result => {
-    resultsBody.innerHTML += `
-      <tr>
-        <td>${result.unit_code}</td>
-        <td>${result.unit_name}</td>
-        <td>${result.score}</td>
-        <td>${result.award}</td>
-        <td class="remarks">${result.award}</td>
-      </tr>
+const failedUnitsList =
+  document.getElementById("failedUnitsList");
+if (failedUnitsList) {
+
+  failedUnitsList.innerHTML = "";
+
+  if (!data.failedUnits ||
+      data.failedUnits.length === 0) {
+
+    failedUnitsList.innerHTML = `
+      <div class="unit-card">
+        No failed units.
+      </div>
     `;
-  });
 
-})
+  } else {
+
+    data.failedUnits.forEach(unit => {
+
+      failedUnitsList.innerHTML += `
+        <div class="unit-card failed-unit">
+          <strong>${unit.unit_code}</strong><br>
+          ${unit.unit_name}
+        </div>
+      `;
+
+    });
+
+  }
+
+}
+
+}) // <-- THIS WAS MISSING
+
 .catch(err => {
   console.error("Dashboard load error:", err);
 });
@@ -101,18 +121,20 @@ async function downloadResultPDF(){
     const signature =
       await loadImage("/signature.jpg");
 
-    const student = {
-      name: studentData.student_name || "",
-      reg: studentData.reg_number || "",
-      course: studentData.course_name || ""
-    };
+  const student = {
+  name: studentData.student_name || "",
+  reg: studentData.reg_number || "",
+  course: studentData.course_name || ""
+};
 
-    const qrData =
-      await QRCode.toDataURL(
-        JSON.stringify(student)
-      );
+const verifyUrl =
+  `https://gdehexm.onrender.com/verify/${student.reg}`;
 
-   // =====================
+const qrData =
+  await QRCode.toDataURL(
+    verifyUrl
+  );  
+// =====================
 // LOGO
 // =====================
 
@@ -397,7 +419,7 @@ doc.text(
 284,
 { align:"center" }
 );
-    // DOWNLOAD
+// DOWNLOAD
 
     doc.save(
       `${student.reg}_Result_Slip.pdf`

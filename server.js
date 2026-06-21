@@ -182,11 +182,11 @@ const unitsResult =
   await pool.query(
     `
     SELECT DISTINCT
-      unit_code,
-      unit_name
-    FROM questions
-    WHERE course_name = $1
-    ORDER BY unit_code
+  unit_code,
+  unit_name
+FROM questions
+WHERE course_name = $1
+ORDER BY unit_code
     `,
     [studentData.course_name]
   );
@@ -208,19 +208,25 @@ const resultsResult =
     [student.id]
   );
 
+ const failedUnits = resultsResult.rows.filter(
+  unit =>
+    String(unit.award).toUpperCase() === "FAIL" ||
+    String(unit.award).toUpperCase() === "FAILED"
+);
+console.log("Course:", studentData.course_name);
+console.log("Units:", unitsResult.rows);
+
 res.json({
 
-  student:
-    studentData,
+  student: studentData,
 
-  units:
-    unitsResult.rows,
+  units: unitsResult.rows,
 
-  results:
-    resultsResult.rows
+  results: resultsResult.rows,
+
+  failedUnits
 
 });
-
 } catch (err) {
 
 console.error(err);
